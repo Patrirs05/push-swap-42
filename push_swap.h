@@ -1,0 +1,64 @@
+#ifndef SAWP_LIBFT_H
+# define SAWP_LIBFT_H
+
+# include <unistd.h>
+# include <stdlib.h>
+# include <stddef.h>
+
+struct s_node
+{
+	int				value;
+	struct s_node	*next;
+	struct s_node	*prev;
+};
+
+struct s_config
+{
+	int		strategy;
+	int		bench;
+};
+
+//parse(correcciòn de errores)
+int				is_valid_number(char *str);
+long long		ft_atoi_safe(char *str, int *error);
+int				duplicate(struct s_node *stack, int n);
+int				add_number(struct s_node **stack, char *str);
+//a y b
+struct s_node	*parse_args(int argc, char **argv);
+//stack
+struct s_node	*ft_new_node(int n);
+void			add_back(struct s_node **stack, struct s_node *new);
+void			free_stack(struct s_node **stack);
+////utils_base (swap, push, rotate, revers_rotate)
+void			swap(struct s_node **stack);
+void			push(struct s_node **from, struct s_node **to);
+void			rotate(struct s_node **stack);
+void			revers_rotate(struct s_node **stack);
+//utils_s_p
+void			sa(struct s_node **a);
+void			sb(struct s_node **b);
+void			ss(struct s_node **a, struct s_node **b);
+void			pa(struct s_node **a, struct s_node **b);
+void			pb(struct s_node **a, struct s_node **b);
+//utils_rotate
+void			ra(struct s_node **a);
+void			rb(struct s_node **b);
+void			rr(struct s_node **a, struct s_node **b);
+//utils_revers
+void			rra(struct s_node **a);
+void			rrb(struct s_node **b);
+void			rrr(struct s_node **a, struct s_node **b);
+//flags
+int				ft_strcmp(char *s1, char *s2);
+int				is_strategy_flag(char *str, struct s_config *cfg);
+int				is_flag(char *str, struct s_config *cfg);
+//base_alg
+int				stack_size(struct s_node *stack);
+int				find_min_pos (struct s_node *stack);
+//alg_simpl
+void			bring_to_top(struct s_node **a, int pos);
+void			selection_sort(struct s_node **a, struct s_node **b);
+//
+double			compute_disorder(struct s_node *a);
+
+#endif
