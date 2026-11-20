@@ -1,4 +1,16 @@
-#include "sawp_libft.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_args.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: patrirod <patrirod@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/20 18:10:30 by patrirod          #+#    #+#             */
+/*   Updated: 2026/11/20 18:10:33 by patrirod         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
 
 struct s_node	*parse_args(int argc, char **argv, struct s_config *cfg)
 {

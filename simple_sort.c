@@ -1,8 +1,20 @@
-#include "sawp_libft.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   simple_sort.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: patrirod <patrirod@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/20 18:09:45 by patrirod          #+#    #+#             */
+/*   Updated: 2026/11/20 18:09:46 by patrirod         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
 
 //Algoritmo sencillo: Adaptación del orden por selección
 
-int	 stack_size(struct s_node *stack)
+int	stack_size(struct s_node *stack)
 {
 	int		size;
 
@@ -17,7 +29,7 @@ int	 stack_size(struct s_node *stack)
 
 // Búsqueda del mínimo (find_min_pos): Recorre toda la pila a para 
 // encontrar la posición del número más pequeño que queda sin ordenar.
-int		find_min_pos (struct s_node *stack)
+int	find_min_pos(struct s_node *stack)
 {
 	int		min;
 	int		pos;

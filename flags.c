@@ -1,4 +1,16 @@
-#include "sawp_libft.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   flags.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: patrirod <patrirod@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/20 18:10:43 by patrirod          #+#    #+#             */
+/*   Updated: 2026/11/20 18:10:44 by patrirod         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "push_swap.h"
 
 int		ft_strcmp(char *s1, char *s2)
 {
@@ -13,7 +25,7 @@ int		ft_strcmp(char *s1, char *s2)
 int		is_strategy_flag(char *str, struct s_config *cfg)
 {
 	if (!ft_strcmp(str, "--simple"))
-	{	
+	{
 		cfg->strategy = 1;
 		return (1);
 	}

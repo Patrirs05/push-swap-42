@@ -1,16 +1,29 @@
-#ifndef SAWP_LIBFT_H
-# define SAWP_LIBFT_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   push_swap.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: patrirod <patrirod@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/11/20 18:09:07 by patrirod          #+#    #+#             */
+/*   Updated: 2026/11/20 18:28:23 by patrirod         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef PUSH_SWAP_H
+# define PUSH_SWAP_H
 
 # include <unistd.h>
 # include <stdlib.h>
 # include <stddef.h>
 
-struct s_node
+typedef struct s_node
 {
 	int				value;
+	int				index;
 	struct s_node	*next;
 	struct s_node	*prev;
-};
+}	t_stack;
 
 struct s_config
 {
@@ -54,10 +67,13 @@ int				is_strategy_flag(char *str, struct s_config *cfg);
 int				is_flag(char *str, struct s_config *cfg);
 //base_alg
 int				stack_size(struct s_node *stack);
-int				find_min_pos (struct s_node *stack);
+int				find_min_pos(struct s_node *stack);
 //alg_simpl
 void			bring_to_top(struct s_node **a, int pos);
 void			selection_sort(struct s_node **a, struct s_node **b);
+//
+void			bubble_sort_array(int *arr, int size);
+void			index_stack_a(t_stack *stack_a, int size);
 //
 double			compute_disorder(struct s_node *a);
 
