@@ -6,7 +6,7 @@
 /*   By: patrirod <patrirod@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/20 18:09:07 by patrirod          #+#    #+#             */
-/*   Updated: 2026/11/22 10:17:27 by patrirod         ###   ########.fr       */
+/*   Updated: 2026/11/22 16:10:28 by patrirod         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,11 @@ int				find_max_index_position(t_stack *stack_b);
 void			bring_max_to_top(t_stack **stack_b, int max_pos);
 void			return_to_a(t_stack **stack_a, t_stack **stack_b);
 void			sort_with_chunks(t_stack **stack_a, t_stack **stack_b);
+//alg_complex
+int				get_max_bits(t_stack *stack);
+void			radix_sort_pass(t_stack **stack_a,
+					t_stack **stack_b, int bit, int size);
+void			sort_radix(t_stack **stack_a, t_stack **stack_b);
 //
 double			compute_disorder(struct s_node *a);
 

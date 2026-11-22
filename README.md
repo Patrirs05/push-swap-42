@@ -1,4 +1,6 @@
 
+Algoritmo intermedio
+
 1. Bloque de Preprocesamiento (Indexación)
 
 Este bloque se ejecuta una sola vez al principio, antes de empezar a mover los stacks.
@@ -114,3 +116,146 @@ La función que invocarás desde tu main.c cuando detectes que te han pasado, po
         1. Llamas a index_stack_a (para transformar los valores reales en índices del 0 al N-1).
         2. Llamas a push_all_chunks (para vaciar A hacia B en forma de cebolla).
         3. Llamas a return_to_a (para devolver los números de B a A en perfecto orden).
+
+Algoritmo complejo
+
+
+1. int get_max_bits(t_stack *stack)
+
+Antes de empezar a mover bits, necesitas saber cuándo parar. Si tienes 100 números, el índice más grande es el 99. En binario, el 99 se escribe 1100011 (necesita 7 bits). Esta función calcula cuántas pasadas de bits tendremos que hacer.
+• Qué hace:
+	1. Busca cuál es el índice (index) más alto en todo el stack (que siempre será igual a stack_size - 1 si está bien indexado).
+	2. Inicializa un contador de bits en 0.
+	3. Ejecuta un bucle while que va desplazando ese número máximo hacia la derecha en binario (max >> 1) e incrementando el contador hasta que el número se convierta en 0.
+	4. Devuelve el número total de bits (el contador).
+
+
+Simulación de la función Paso a Paso (Con el número 99)
+
+Tu función guardará el número máximo (99) en una variable (por ejemplo, int max = 99;) e inicializará max_bits = 0.
+Entramos en un bucle while (max > 0) que hará lo siguiente en cada vuelta:
+• Vuelta 1:
+	• max vale 99 (1100011 en binario). Como es mayor que 0, entramos.
+	• Hacemos max = max >> 1;. El número se desplaza. En decimal: 99 / 2 = 49. En binario pasa a ser 110001 (se cayó el último 1).
+	• Sumamos el bit encontrado: max_bits++ \(\rightarrow \) max_bits ahora vale 1.
+• Vuelta 2:
+	• max vale 49 (110001). Sigue siendo mayor que 0.
+	• Desplazamos: 49 / 2 = 24. En binario queda 11000.
+	• max_bits++ \(\rightarrow \) max_bits ahora vale 2.
+• Vuelta 3:
+	• max vale 24 (11000).
+	• Desplazamos: 24 / 2 = 12. En binario queda 1100.
+	• max_bits++ \(\rightarrow \) max_bits ahora vale 3.
+• Vuelta 4:
+	• max vale 12 (1100).
+	• Desplazamos: 12 / 2 = 6. En binario queda 110.
+	• max_bits++ \(\rightarrow \) max_bits ahora vale 4.
+• Vuelta 5:
+	• max vale 6 (110).
+	• Desplazamos: 6 / 2 = 3. En binario queda 11.
+	• max_bits++ \(\rightarrow \) max_bits ahora vale 5.
+• Vuelta 6:
+	• max vale 3 (11).
+	• Desplazamos: 3 / 2 = 1. En binario queda 1.
+	• max_bits++ \(\rightarrow \) max_bits ahora vale 6.
+• Vuelta 7:
+	• max vale 1 (1).
+	• Desplazamos: 1 / 2 = 0. En binario queda 0.
+	• max_bits++ \(\rightarrow \) max_bits ahora vale 7.
+• Vuelta 8:
+	• El while comprueba si max > 0. Como ahora max vale 0, el bucle se rompe de inmediato.
+
+Al final, la función ejecuta un return (max_bits); y devuelve el número 7.
+
+2. void radix_sort_pass(t_stack **stack_a, t_stack **stack_b, int bit, int size)
+
+Esta función se encarga de realizar una única pasada completa para un bit específico. Aislar esta lógica te ahorrará un anidamiento de bucles masivo, protegiendo tu código de romper la Norma de 42.
+• Qué hace:
+	1. Ejecuta un bucle que da exactamente size vueltas (una por cada elemento del Stack A).
+	2. En cada vuelta, comprueba el elemento del tope de A: evalúa si el bit actual (bit) de su index es un 0 o un 1 usando operaciones bit a bit.
+	3. Si el bit es 0: llama a tu función pb(stack_a, stack_b).
+	4. Si el bit es 1: llama a tu función ra(stack_a) para dejarlo en A.
+	5. Al terminar las size vueltas, mete un segundo bucle corto que hace pa(stack_a, stack_b) de forma continua hasta que el Stack B se quede completamente vacío.
+
+
+Ejemplo práctico (Pasada de las decenas)
+
+Imagina que ya ordenamos por las unidades y nuestra lista actual es: [121, 432, 21, 564, 23, 1] (al 1 lo vemos como 001). Ahora toca la pasada de las decenas (el segundo dígito empezando por la derecha).
+1. Repartir en cubetas (0 al 9): Miras el dígito de las decenas de cada número y lo metes en su caja correspondiente, respetando el orden en el que van apareciendo:
+	• Cubeta 0: 001 (su decena es 0)
+	• Cubeta 1: (vacía)
+	• Cubeta 2: 121, 21, 23 (todos tienen un 2 en las decenas)
+	• Cubeta 3: 432
+	• Cubeta 4 y 5: (vacías)
+	• Cubeta 6: 564
+	• Cubeta 7, 8 y 9: (vacías)
+2. Vaciar las cubetas en orden: Recoges los números empezando desde la cubeta 0 hasta la 9, sacándolos en el mismo orden en el que entraron:
+	• Resultado de esta pasada: [1, 121, 21, 23, 432, 564]
+
+
+La función de una pasada: radix_sort_pass(t_stack **stack_a, t_stack **stack_b, int bit, int size)
+
+Esta función NO lleva exp, ni max, ni vuelve a llamar a index_stack_a. Su único trabajo es revisar los size elementos de stack_a fijándose únicamente en la columna bit:
+1. Bucle para revisar toda la pila stack_a (i = 0 hasta i < size):
+	• Miras el bit actual del nodo que está arriba del todo ((*stack_a)->index).
+	• ¿Cómo se saca ese bit en C? Desplazas el índice hacia la derecha bit posiciones y te quedas con el último bit: (((*stack_a)->index >> bit) & 1).
+	• Si el resultado es 0: Lo mandas a la pila B haciendo pb(stack_a, stack_b).
+	• Si el resultado es 1: Lo dejas en la pila A rotándolo al fondo con ra(stack_a).
+	• Sumas i++ y repites hasta haber mirado los size elementos iniciales.
+2. Vaciar stack_b de vuelta a stack_a:
+	• Cuando termina el bucle anterior, todos los números con un 0 en ese bit están en stack_b y los que tenían un 1 se quedaron ordenados en stack_a.
+	• Haces un bucle while (*stack_b != NULL) llamando a pa(stack_a, stack_b) hasta que stack_b quede completamente vacía.
+
+
+1. Bucle para revisar toda la pila stack_a (i = 0 hasta i < size):
+	• Miras el bit actual del nodo que está arriba del todo ((*stack_a)->index).
+    En binario, cualquier número se escribe solo con unos y ceros. Por ejemplo, el índice 6 en binario es 110:
+• Columna bit = 0 (la de más a la derecha): vale 0.
+• Columna bit = 1 (la del medio): vale 1.
+• Columna bit = 2 (la de la izquierda): vale 1.
+La operación (index >> bit) & 1 hace exactamente lo mismo que hacíamos antes con / 10 y % 10, pero en base 2:
+• >> bit empuja el número hacia la derecha tantas columnas como diga bit (para poner la columna que te interesa justo en el borde derecho).
+• & 1 mira únicamente ese último dígito de la derecha y te dice si es un 0 o un 1.
+
+2. ¿Por qué pb si es 0 y ra si es 1?
+
+Imagina que tienes una baraja de cartas boca arriba (stack_a) y otra mesa vacía al lado (stack_b). Vas a revisar todas las cartas de stack_a una por una (por eso das size vueltas, una por cada carta que había al principio):
+• Miras la carta de arriba del todo de stack_a:
+	• Si su bit actual es 0: La apartas a la mesa de al lado (pb). Como te la llevas de stack_a, la siguiente carta de la baraja queda automáticamente arriba lista para el siguiente turno.
+	• Si su bit actual es 1: Quieres que se quede en stack_a, pero necesitas quitarla de arriba para poder mirar la carta que tiene debajo. ¿Cómo la quitas de en medio sin sacarla de stack_a? La pasas al fondo de la baraja (ra).
+Al terminar de mirar las size cartas:
+• Todas las cartas que tenían un 0 acabaron en stack_b.
+• Todas las cartas que tenían un 1 dieron la vuelta y volvieron a quedar en stack_a, conservando su orden.
+
+3. El remate: devolver las cartas (pa)
+
+Como los números con 0 siempre son menores que los que tienen 1 en esa columna, deben ir arriba del todo en stack_a. Así que vacías todo stack_b devolviendo las cartas una a una a stack_a (pa) hasta que stack_b quede vacía.
+Para asegurarnos de que te queda cristalino antes de escribirlo, dime:
+• Si quieres que hagamos una prueba visual con 4 índices (3, 1, 2, 0) moviéndolos en bit = 0 y bit = 1
+• O si ya ves clara la mecánica de pb / ra / pa para intentar escribir la función
+
+
+3. void sort_radix(t_stack **stack_a, t_stack **stack_b)
+
+Esta es la función principal del algoritmo complejo, la que invocará tu main.c para listas grandes (de 100 o 500 números). Actúa como la directora de la operación.
+• Qué hace:
+	1. Obtiene el tamaño total del stack inicial: size = stack_size(*stack_a).
+	2. Llama a tu función de preprocesamiento para preparar los índices: index_stack_a(*stack_a, size).
+	3. Obtiene el límite de iteraciones llamando a la primera función: max_bits = get_max_bits(*stack_a).
+	4. Ejecuta un bucle while con un contador bit que va desde 0 hasta max_bits - 1.
+	5. Dentro de ese bucle, simplemente llama a la segunda función: radix_sort_pass(stack_a, stack_b, bit, size).
+
+    
+La función principal: radix_sort(t_stack **stack_a, t_stack **stack_b)
+
+Esta es la función "jefa" que controla todo el algoritmo:
+1. Preparas los datos (una sola vez):
+	• Calculas size = stack_size(*stack_a).
+	• Llamas a index_stack_a(*stack_a, size) para que todos los nodos tengan su index del 0 al size - 1.
+	• Calculas el tope de pasadas llamando a tu función: max_bits = get_max_bits(*stack_a).
+2. Haces el bucle de las pasadas (bit):
+	• Creas un contador bit = 0.
+	• Mientras bit < max_bits:
+		• Llamas a radix_sort_pass(stack_a, stack_b, bit, size).
+		• Sumas bit++ para pasar al siguiente bit en la próxima vuelta.
+
