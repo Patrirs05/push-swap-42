@@ -6,7 +6,7 @@
 /*   By: patrirod <patrirod@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/20 18:09:07 by patrirod          #+#    #+#             */
-/*   Updated: 2026/11/20 18:28:23 by patrirod         ###   ########.fr       */
+/*   Updated: 2026/11/22 10:17:27 by patrirod         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,15 @@ int				find_min_pos(struct s_node *stack);
 //alg_simpl
 void			bring_to_top(struct s_node **a, int pos);
 void			selection_sort(struct s_node **a, struct s_node **b);
-//
+//alg_medium
 void			bubble_sort_array(int *arr, int size);
 void			index_stack_a(t_stack *stack_a, int size);
+int				get_chunk_size(int size);
+void			push_all_chunks(t_stack **stack_a, t_stack **stack_b);
+int				find_max_index_position(t_stack *stack_b);
+void			bring_max_to_top(t_stack **stack_b, int max_pos);
+void			return_to_a(t_stack **stack_a, t_stack **stack_b);
+void			sort_with_chunks(t_stack **stack_a, t_stack **stack_b);
 //
 double			compute_disorder(struct s_node *a);
 
