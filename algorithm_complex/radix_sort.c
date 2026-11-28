@@ -43,9 +43,15 @@ void	radix_sort_pass(t_stack **stack_a, t_stack **stack_b, int bit, int size)
 	i = 0;
 	while (i < size)
 	{
-		radix_sort_pass(stack_a, stack_b, bit, size);
-		exp = exp * 10;
+		(*stack_a)->index;
+		if(((*stack_a)->index >> bit) & 1 == 0)
+			pb(stack_a, stack_b);
+		else
+			ra(stack_a);
+		i++;
 	}
+	while (*stack_b)
+		pa(stack_a, stack_b);
 }
 
 void	sort_radix(t_stack **stack_a, t_stack **stack_b)

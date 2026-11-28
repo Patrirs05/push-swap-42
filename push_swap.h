@@ -68,10 +68,10 @@ int				is_flag(char *str, struct s_config *cfg);
 //base_alg
 int				stack_size(struct s_node *stack);
 int				find_min_pos(struct s_node *stack);
-//alg_simpl
+//simple_alg
 void			bring_to_top(struct s_node **a, int pos);
 void			selection_sort(struct s_node **a, struct s_node **b);
-//alg_medium
+//medium_alg
 void			bubble_sort_array(int *arr, int size);
 void			index_stack_a(t_stack *stack_a, int size);
 int				get_chunk_size(int size);
@@ -80,12 +80,13 @@ int				find_max_index_position(t_stack *stack_b);
 void			bring_max_to_top(t_stack **stack_b, int max_pos);
 void			return_to_a(t_stack **stack_a, t_stack **stack_b);
 void			sort_with_chunks(t_stack **stack_a, t_stack **stack_b);
-//alg_complex
+//complex_alg
 int				get_max_bits(t_stack *stack);
 void			radix_sort_pass(t_stack **stack_a,
 					t_stack **stack_b, int bit, int size);
 void			sort_radix(t_stack **stack_a, t_stack **stack_b);
-//
+//adaptive_alg
 double			compute_disorder(struct s_node *a);
+void			adaptive_sort(t_stack **stack_a, t_stack **stack_b);
 
 #endif

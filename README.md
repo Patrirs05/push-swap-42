@@ -259,3 +259,367 @@ Esta es la función "jefa" que controla todo el algoritmo:
 		• Llamas a radix_sort_pass(stack_a, stack_b, bit, size).
 		• Sumas bit++ para pasar al siguiente bit en la próxima vuelta.
 
+
+
+2. ¿Qué tienes que comprobar en radix_sort_pass()?
+En lugar de consultar el número original del nodo, consultas su índice:
+- (*stack_a)->index: obtiene el índice del nodo superior.
+- >> bit: desplaza el índice.
+- & 1: obtiene el bit que quieres comprobar.
+Por tanto, todas las decisiones de PB y RA se realizan utilizando el índice.
+3. ¿Qué ocurre con el número original?
+No lo modificas ni lo sustituyes.
+
+Cada nodo conserva:
+- Su número original (value, number o como hayas llamado al campo).
+- Su índice (index).
+Cuando haces pb(), ra() o pa(), mueves el nodo completo, así que el número original permanece asociado a su índice.
+
+Paso 1. Crear el primer bucle while
+Necesitas recorrer todos los elementos que había inicialmente en Stack A.
+
+Para ello, utiliza la variable i que acabas de inicializar.
+
+Piensa en la condición:
+- i empieza en 0.
+- Tienes que recorrer size elementos.
+- Cuando i llegue a size, debes salir del bucle.
+Por ejemplo, si tienes 4 elementos:
+Iteración	Valor de i
+Primera	0
+Segunda	1
+Tercera	2
+Cuarta	3
+Salida	4
+
+Importante: no utilices como condición el tamaño actual de A. Cuando haces pb(), A pierde elementos, pero tú necesitas revisar todos los elementos originales.
+Paso 2. Obtener el índice del nodo superior
+Dentro del while, necesitas consultar el índice del nodo que está arriba de Stack A.
+
+Recuerda cómo acceder a los elementos de una estructura:
+- *stack_a accede al primer nodo de A.
+- (*stack_a)->index accede al campo index de ese nodo.
+No necesitas recorrer toda la lista enlazada porque en cada iteración vas a trabajar con el nodo superior.
+Paso 3. Comprobar el bit que te interesa
+Esta es la parte fundamental.
+
+Tienes que utilizar la operación:
+(index >> bit) & 1
+
+
+Vamos a entenderla con un ejemplo.
+
+Imagina que el índice del nodo superior es 6.
+
+Su representación binaria es:
+
+110
+
+Si bit = 0:
+- Desplazas 0 posiciones.
+- Compruebas el último bit.
+- Resultado: 0.
+Si bit = 1:
+- Desplazas una posición a la derecha.
+- Obtienes 11.
+- Compruebas el último bit.
+- Resultado: 1.
+Si bit = 2:
+- Desplazas dos posiciones.
+- Obtienes 1.
+- Compruebas el último bit.
+- Resultado: 1.
+Por tanto, necesitas construir un if que compruebe si el resultado de esa expresión es igual a 0.
+
+No necesitas crear una variable adicional para almacenar el resultado, aunque podrías hacerlo si te ayuda a entenderlo.
+Paso 4. Si el bit es 0, utiliza pb()
+¿Qué significa que el bit sea 0?
+
+Que ese elemento debe ir temporalmente a Stack B.
+
+Por tanto, dentro del primer caso de tu condición tienes que llamar a:
+
+pb(stack_a, stack_b)
+
+¿Qué ocurre después?
+- El nodo superior de A pasa a B.
+- El siguiente nodo de A se convierte en el nuevo superior.
+- En la siguiente iteración comprobarás ese nuevo nodo.
+No necesitas incrementar ningún otro contador por haber hecho PB.
+Paso 5. Si el bit es 1, utiliza ra()
+Ahora piensa en el caso contrario.
+
+Si el bit es 1, quieres que el nodo permanezca en A.
+
+Pero tienes que quitarlo de arriba para poder consultar el siguiente.
+
+¿Qué operación utilizas?
+
+ra(stack_a)
+
+Esta operación mueve el nodo superior al final de A.
+
+Así consigues que el siguiente elemento quede disponible para la siguiente iteración.
+
+Una cosa importante: ra() conserva el orden relativo de los elementos que tienen un bit 1.
+Paso 6. Incrementar i
+Después de ejecutar el if y realizar PB o RA, incrementa i.
+
+¿Por qué fuera del if?
+
+Porque en ambos casos has procesado un elemento:
+- Si has hecho PB, has procesado el nodo que has enviado a B.
+- Si has hecho RA, has procesado el nodo que has enviado al fondo de A.
+Por tanto, siempre debes incrementar el contador una vez.
+
+Cuando el primer while termine, habrás revisado todos los elementos iniciales.
+Paso 7. Crear el segundo while
+Ahora empieza la segunda parte de la función.
+
+Imagina que has terminado el primer bucle y tienes:
+Stack A
+Index 3
+
+Index 1
+
+
+Elementos cuyo bit era 1
+Stack B
+Index 0
+
+Index 2
+
+
+Elementos cuyo bit era 0
+
+Ejemplo ilustrativo de la distribución después de una pasada.
+
+Necesitas devolver todos los elementos de B a A.
+
+Para ello, crea un segundo while.
+
+Su condición debe comprobar que stack_b no sea NULL.
+
+Recuerda:
+- *stack_b es el primer nodo de B.
+- Si *stack_b es NULL, significa que B está vacía.
+- Si no es NULL, todavía quedan elementos por devolver.
+Paso 8. Utilizar pa()
+Dentro del segundo while, llama a:
+
+pa(stack_a, stack_b)
+
+Esta operación:
+1. Coge el nodo superior de B.
+2. Lo mueve al principio de A.
+3. Actualiza los punteros de ambas pilas.
+No necesitas un contador para este segundo bucle porque su condición depende de que B se quede vacía.
+
+9. Comprobación final: cómo debería quedar tu lógica
+Sin escribirte el código completo, esta es la estructura que debes conseguir:
+RADIX_SORT_PASS
+1. Inicializar i = 0.
+2. Primer while: mientras i sea menor que size.
+   - Consultar el índice del nodo superior de A.
+   - Comprobar el bit indicado.
+   - Si es 0 → PB.
+   - Si es 1 → RA.
+   - Incrementar i.
+3. Segundo while: mientras B no esté vacía.
+   
+   - Ejecutar PA.
+
+10. Dos detalles que debes tener en cuenta
+1. ¿Por qué hacemos PA al terminar?
+
+Porque los elementos con bit 0 deben quedar antes que los elementos con bit 1 para mantener el orden LSD.
+
+2. ¿Por qué no calculamos el índice máximo ni los bits aquí?
+
+Porque esta función solo tiene que realizar una pasada. El número de pasadas lo calcula sort_radix() y el índice máximo lo calcula get_max_bits().
+
+La función sort_radix() es la encargada de organizar las pasadas del algoritmo. Imagínatela como el director de todo el proceso: prepara los datos, calcula cuántas pasadas hacen falta y las ejecuta.
+Paso 1. Guardar el tamaño de la pila
+Lo primero que necesitas saber es cuántos números tienes en stack_a.
+
+¿Por qué? Porque cada pasada de Radix tiene que procesar exactamente el número de elementos que había inicialmente en A.
+
+Por tanto, utiliza tu función stack_size() y guarda ese resultado en la variable size.
+Paso 2. Asignar los índices
+Antes de empezar a ordenar, tienes que llamar a index_stack_a().
+
+Recuerda que Radix no va a ordenar directamente los valores originales, sino sus índices.
+
+Por ejemplo, si tienes cinco números, sus índices estarán comprendidos entre 0 y 4, independientemente de que los valores originales sean positivos o negativos.
+
+Esto lo haces una sola vez, antes de empezar las pasadas.
+Paso 3. Calcular el número de bits
+Ahora necesitas saber cuántas pasadas vas a realizar.
+
+Para ello, llama a get_max_bits() y guarda el resultado en max_bits.
+
+Por ejemplo, si tienes cinco elementos, los índices serán del 0 al 4:
+- 0 → 000
+- 1 → 001
+- 2 → 010
+- 3 → 011
+- 4 → 100
+Necesitas examinar tres bits, así que tendrás que realizar tres pasadas.
+Paso 4. Recorrer los bits
+Aquí necesitas utilizar la variable bit como contador.
+
+Piensa en lo siguiente:
+1. ¿Con qué bit tienes que empezar? Con el bit 0, el menos significativo.
+2. ¿Cuándo tienes que dejar de repetir las pasadas? Cuando hayas llegado al número de bits calculado en el paso anterior.
+3. ¿Qué tienes que hacer en cada repetición? Llamar a radix_sort_pass() pasándole las dos pilas, el bit que estás examinando y el tamaño inicial.
+4. ¿Qué tienes que hacer al terminar cada pasada? Incrementar bit para examinar el siguiente.
+
+Ejemplo:
+
+Con los índices [3, 1, 2, 0]:
+
+Primera pasada (bit 0):
+
+[0, 2, 3, 1]
+
+Hemos agrupado los ceros antes que los unos.
+
+Segunda pasada (bit 1):
+
+Ahora agrupamos los índices según el segundo bit, pero conservando el orden relativo que tenían dentro de cada grupo.
+
+Resultado:
+
+[0, 1, 2, 3]
+
+¡Ya están ordenados!
+
+
+Indice de desorden
+1. ¿Qué está calculando tu función?
+Tu función cuenta las inversiones de la pila.
+
+Una inversión es una pareja de elementos que aparece en el orden incorrecto.
+
+Por ejemplo, imagina esta pila:
+
+3 → 1 → 2 → 4
+
+Tu función compara cada elemento con todos los que tiene detrás:
+Pareja	¿Está desordenada?
+3 y 1	Sí
+3 y 2	Sí
+3 y 4	No
+1 y 2	No
+1 y 4	No
+2 y 4	No
+
+Hay 2 inversiones de un total de 6 parejas.
+
+Por tanto:
+\[
+disorder = \frac{2}{6} \approx 0,333
+\]
+
+La pila pertenece al régimen de desorden medio.
+2. ¿Qué hace cada parte de tu función?
+- i: recorre la pila y selecciona el elemento que vamos a comparar.
+- j: empieza en el siguiente elemento de i y recorre todos los elementos posteriores.
+- total_pairs: cuenta todas las parejas comparadas.
+- mistakes: cuenta las parejas que están fuera de orden.
+- i->value > j->value: detecta una inversión, suponiendo que quieres ordenar de menor a mayor.
+Cuando termina, divide las inversiones entre todas las parejas posibles.
+
+Además, tienes correctamente controlado el caso en el que no hay parejas: devuelve 0.0.
+3. Una diferencia importante respecto a la métrica anterior
+Tu función tiene una ventaja: detecta también desórdenes que no están uno al lado del otro.
+
+Por ejemplo:
+- 1 2 3 4 5 → 0
+- 1 2 4 3 5 → 0,1
+- 5 4 3 2 1 → 1
+Correcto
+ La métrica está bien planteada matemáticamente para medir la proporción de parejas invertidas.
+
+Pero hay algo que debes tener en cuenta: el coste de calcularla es O(n²), porque comparas cada elemento con todos los posteriores.
+
+Esto puede ser relevante para tu apartado adaptativo: el enunciado exige determinadas complejidades para los métodos de ordenación, así que tendremos que estudiar si el coste de calcular el desorden también debe incluirse en el presupuesto total.
+
+Algoritmo adptativo
+
+1. ¿Qué parámetros necesita?
+Te recomiendo que reciba los mismos parámetros que tus otras funciones de ordenación:
+- stack_a: puntero doble a la pila A.
+- stack_b: puntero doble a la pila B.
+¿Por qué puntero doble? Porque los algoritmos que vas a llamar modificarán las pilas: moverán nodos, rotarán elementos, etc.
+2. ¿Qué variables necesitas?
+En principio, solamente una:
+
+- disorder: de tipo double, para almacenar el resultado de compute_disorder().
+
+No necesitas volver a calcular el número de elementos ni contar las inversiones, porque eso ya lo hace tu función predefinida.
+3. ¿Qué tiene que hacer la función?
+Vamos a dividirla en cuatro pasos.
+Flujo de adaptive_sort()
+1. Calcular el desorden
+
+Llamar a compute_disorder() pasando la pila A.
+
+
+2. Evaluar el resultado
+
+Comprobar el valor de disorder.
+
+
+Bajo
+Menor que 0,2
+
+Método O(n)
+
+
+Medio
+0,2 a 0,5
+
+Método O(n√n)
+
+
+Alto
+Desde 0,5
+
+Método O(n log n)
+
+
+
+
+3. Ejecutar el método seleccionado
+
+Llamar a la función correspondiente pasando las pilas.
+
+
+4. ¿Qué estructura de control debes utilizar?
+Te recomiendo un if / else if / else.
+
+El orden de las condiciones sería:
+1. Primero comprobar si disorder es menor que 0.2.
+2. Después comprobar si es menor que 0.5.
+3. Finalmente, si no se cumple ninguna de las anteriores, significa que es igual o superior a 0.5.
+Fíjate en que no necesitas comprobar explícitamente que sea mayor o igual que 0.2 en la segunda condición, porque ya has descartado los valores inferiores.
+5. ¿Qué nombres tendrán las otras funciones?
+Para mantener una nomenclatura coherente, te propongo:
+Función	Responsabilidad
+adaptive_sort()	Seleccionar el algoritmo
+sort_low_disorder()	Resolver el régimen bajo
+sort_medium_disorder()	Resolver el régimen medio
+sort_radix()	Resolver el régimen alto
+
+Las dos primeras son nombres propuestos; todavía tenemos que diseñar sus algoritmos.
+6. Hay dos cuestiones importantes antes de programarla
+Primera: el cálculo del desorden.
+
+Tu función compute_disorder() tiene complejidad O(n²), porque compara todas las parejas. Esto es importante: si el requisito de complejidad incluye también el cálculo del desorden, no podemos afirmar que el método adaptativo completo sea O(n) u O(n√n). Tendremos que resolverlo o justificar cómo se mide el coste en el modelo de tu proyecto.
+
+Segunda: el orden de las operaciones.
+
+Como compute_disorder() trabaja con los valores originales, puedes llamarla antes de asignar índices. No necesitas preparar la pila para Radix antes de conocer el desorden.
+
+funcion para desorden bajo
